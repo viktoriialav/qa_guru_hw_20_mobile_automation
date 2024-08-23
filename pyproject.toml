@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "qa-guru-hw-19-mobile-automation"
+version = "0.1.0"
+description = ""
+authors = ["Viktoriia Lavrova <viktoriia.lav2908@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+selene = "2.0.0rc9"
+pytest = "^8.3.2"
+appium-python-client = "^4.1.0"
+allure-pytest = "^2.13.5"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
