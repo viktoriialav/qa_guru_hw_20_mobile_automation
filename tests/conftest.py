@@ -14,21 +14,17 @@ def load_env():
 @pytest.fixture(scope='function')
 def mobile_management():
     options = UiAutomator2Options().load_capabilities({
-        # Specify device and os_version for testing
         "platformVersion": "12.0",
         "deviceName": "Samsung Galaxy S22 Ultra",
 
-        # Set URL of the application under test
         "app": os.getenv('APP_URL'),
         "appWaitActivity": "org.wikipedia.*",
 
-        # Set other BrowserStack capabilities
         'bstack:options': {
             "projectName": "First Python project",
             "buildName": "browserstack-build-1",
             "sessionName": "BStack first_test",
 
-            # Set your access credentials
             "userName": os.getenv('USER_NAME'),
             "accessKey": os.getenv('ACCESS_KEY')
         }
@@ -37,6 +33,24 @@ def mobile_management():
     browser.config.driver_remote_url = str(os.getenv('remote_url', 'http://hub.browserstack.com/wd/hub'))
     browser.config.driver_options = options
     browser.config.timeout = float(os.getenv('timeout', '10.0'))
+
+    yield
+
+    browser.quit()
+
+
+@pytest.fixture(scope='function')
+def browser_management():
+    browser.config.base_url = os.getenv(
+        'base_url', 'https://www.wikipedia.org'
+    )
+    browser.config.driver_name = os.getenv('driver_name', 'chrome')
+    browser.config.hold_driver_at_exit = (
+        os.getenv('hold_driver_at_exit', 'false').lower() == 'true'
+    )
+    browser.config.window_width = os.getenv('window_width', '1024')
+    browser.config.window_height = os.getenv('window_height', '768')
+    browser.config.timeout = float(os.getenv('timeout', '3.0'))
 
     yield
 
