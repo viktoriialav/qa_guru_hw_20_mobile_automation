@@ -15,11 +15,12 @@ def load_env():
 def mobile_management():
     options = UiAutomator2Options().load_capabilities({
         # Specify device and os_version for testing
-        "platformVersion": "9.0",
-        "deviceName": "Google Pixel 3",
+        "platformVersion": "12.0",
+        "deviceName": "Samsung Galaxy S22 Ultra",
 
         # Set URL of the application under test
-        "app": "bs://sample.app",
+        "app": os.getenv('APP_URL'),
+        "appWaitActivity": "org.wikipedia.*",
 
         # Set other BrowserStack capabilities
         'bstack:options': {
@@ -32,6 +33,7 @@ def mobile_management():
             "accessKey": os.getenv('ACCESS_KEY')
         }
     })
+
 
     browser.config.driver_remote_url = str(os.getenv('remote_url', 'http://hub.browserstack.com/wd/hub'))
     browser.config.driver_options = options
