@@ -2,6 +2,7 @@ import os
 
 import pytest
 from appium.options.android import UiAutomator2Options
+from appium.options.ios import XCUITestOptions
 from dotenv import load_dotenv
 from selene import browser
 
@@ -11,14 +12,20 @@ def load_env():
     load_dotenv()
 
 
-@pytest.fixture(scope='function')
-def mobile_management():
-    options = UiAutomator2Options().load_capabilities({
-        "platformVersion": "12.0",
-        "deviceName": "Samsung Galaxy S22 Ultra",
+@pytest.fixture(scope='function', params=[('android', '12.0', 'Samsung Galaxy S22 Ultra'),
+                                          ('android', '13.0', 'Google Pixel 7 Pro'),
+                                          ('android', '11.0', 'OnePlus 9'),
+                                          ('ios', '16', 'iPhone 14 Pro Max'),
+                                          ('ios', '15', 'iPhone XS'),
+                                          ('ios', '14', 'iPhone 11')])
+def mobile_management(request):
+    platform_name, platform_version, device_name = request.param
+    capabilities = {
+        "platformName": platform_name,
+        "platformVersion": platform_version,
+        "deviceName": device_name,
 
-        "app": os.getenv('APP_URL'),
-        "appWaitActivity": "org.wikipedia.*",
+        "app": 'bs://sample.app',
 
         'bstack:options': {
             "projectName": "First Python project",
@@ -28,7 +35,13 @@ def mobile_management():
             "userName": os.getenv('USER_NAME'),
             "accessKey": os.getenv('ACCESS_KEY')
         }
-    })
+    }
+
+    if platform_name == 'android':
+        capabilities['app'] = os.getenv('APP_URL')
+        options = UiAutomator2Options().load_capabilities(capabilities)
+    else:
+        options = XCUITestOptions().load_capabilities(capabilities)
 
     browser.config.driver_remote_url = str(os.getenv('remote_url', 'http://hub.browserstack.com/wd/hub'))
     browser.config.driver_options = options
