@@ -5,6 +5,10 @@ from appium.options.android import UiAutomator2Options
 from appium.options.ios import XCUITestOptions
 from dotenv import load_dotenv
 from selene import browser
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+from hw_19_mobile_automation.utils import allure_web, allure_browserstack
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -20,6 +24,8 @@ def load_env():
                                           ('ios', '14', 'iPhone 11')])
 def mobile_management(request):
     platform_name, platform_version, device_name = request.param
+    user_name = os.getenv('USER_NAME')
+    access_key = os.getenv('ACCESS_KEY')
     capabilities = {
         "platformName": platform_name,
         "platformVersion": platform_version,
@@ -32,8 +38,8 @@ def mobile_management(request):
             "buildName": "browserstack-build-1",
             "sessionName": "BStack first_test",
 
-            "userName": os.getenv('USER_NAME'),
-            "accessKey": os.getenv('ACCESS_KEY')
+            "userName": user_name,
+            "accessKey": access_key
         }
     }
 
@@ -49,7 +55,13 @@ def mobile_management(request):
 
     yield
 
+    session_id = browser.driver.session_id
+    allure_browserstack.attach_screenshot(browser)
+    allure_browserstack.attach_page_source(browser)
+
     browser.quit()
+
+    allure_browserstack.attach_video(session_id, user_name, access_key)
 
 
 @pytest.fixture(scope='function')
@@ -65,6 +77,32 @@ def browser_management():
     browser.config.window_height = os.getenv('window_height', '768')
     browser.config.timeout = float(os.getenv('timeout', '3.0'))
 
-    yield
+    driver_options = Options()
+
+    selenoid_capabilities = {
+        "browserName": "chrome",
+        "browserVersion": '125.0',
+        "selenoid:options": {
+            "enableVNC": True,
+            "enableVideo": True
+        }
+    }
+    driver_options.capabilities.update(selenoid_capabilities)
+
+    user_login = os.getenv('SELENOID_LOGIN')
+    user_password = os.getenv('SELENOID_PASSWORD')
+    selenoid_url = os.getenv('SELENOID_URL')
+    driver = webdriver.Remote(
+        command_executor=f'https://{user_login}:{user_password}@{selenoid_url}/wd/hub',
+        options=driver_options)
+
+    browser.config.driver = driver
+
+    yield browser
+
+    allure_web.attach_screenshot(browser)
+    allure_web.attach_html(browser)
+    allure_web.attach_logs(browser)
+    allure_web.attach_video(browser)
 
     browser.quit()
