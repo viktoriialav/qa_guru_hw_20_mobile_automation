@@ -3,11 +3,9 @@ import os
 import pytest
 from appium.options.android import UiAutomator2Options
 from appium.options.ios import XCUITestOptions
-from appium import webdriver as app_webdriver
+from appium import webdriver
 from dotenv import load_dotenv
 from selene import browser
-import selenium
-from selenium.webdriver.chrome.options import Options
 
 from hw_19_mobile_automation.utils import allure_web, allure_browserstack
 
@@ -50,7 +48,7 @@ def mobile_management(request):
     else:
         options = XCUITestOptions().load_capabilities(capabilities)
 
-    browser.config.driver = app_webdriver.Remote(command_executor='http://hub.browserstack.com/wd/hub', options=options)
+    browser.config.driver = webdriver.Remote(command_executor='http://hub.browserstack.com/wd/hub', options=options)
     browser.config.timeout = float(os.getenv('timeout', '10.0'))
 
     yield
@@ -62,47 +60,3 @@ def mobile_management(request):
     browser.quit()
 
     allure_browserstack.attach_video(session_id, user_name, access_key)
-
-
-@pytest.fixture(scope='function')
-def browser_management():
-    browser.config.base_url = os.getenv(
-        'base_url', 'https://www.wikipedia.org'
-    )
-    browser.config.driver_name = os.getenv('driver_name', 'chrome')
-    browser.config.hold_driver_at_exit = (
-        os.getenv('hold_driver_at_exit', 'false').lower() == 'true'
-    )
-    browser.config.window_width = os.getenv('window_width', '1024')
-    browser.config.window_height = os.getenv('window_height', '768')
-    browser.config.timeout = float(os.getenv('timeout', '3.0'))
-
-    driver_options = Options()
-
-    selenoid_capabilities = {
-        "browserName": "chrome",
-        "browserVersion": '125.0',
-        "selenoid:options": {
-            "enableVNC": True,
-            "enableVideo": True
-        }
-    }
-    driver_options.capabilities.update(selenoid_capabilities)
-
-    user_login = os.getenv('SELENOID_LOGIN')
-    user_password = os.getenv('SELENOID_PASSWORD')
-    selenoid_url = os.getenv('SELENOID_URL')
-    driver = selenium.webdriver.Remote(
-        command_executor=f'https://{user_login}:{user_password}@{selenoid_url}/wd/hub',
-        options=driver_options)
-
-    browser.config.driver = driver
-
-    yield browser
-
-    allure_web.attach_screenshot(browser)
-    allure_web.attach_html(browser)
-    allure_web.attach_logs(browser)
-    allure_web.attach_video(browser)
-
-    browser.quit()
