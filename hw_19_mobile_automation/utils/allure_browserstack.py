@@ -1,5 +1,4 @@
 import allure
-
 import requests
 
 
@@ -17,7 +16,7 @@ def attach_page_source(browser):
 
 def attach_video(session_id, user_name, access_key):
     browserstack_session = requests.get(url=f'https://api.browserstack.com/app-automate/sessions/{session_id}.json',
-                                  auth=(user_name, access_key)).json()
+                                        auth=(user_name, access_key)).json()
 
     video_url = browserstack_session['automation_session']['video_url']
 

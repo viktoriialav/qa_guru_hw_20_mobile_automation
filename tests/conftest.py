@@ -3,9 +3,10 @@ import os
 import pytest
 from appium.options.android import UiAutomator2Options
 from appium.options.ios import XCUITestOptions
+from appium import webdriver as app_webdriver
 from dotenv import load_dotenv
 from selene import browser
-from selenium import webdriver
+import selenium
 from selenium.webdriver.chrome.options import Options
 
 from hw_19_mobile_automation.utils import allure_web, allure_browserstack
@@ -49,8 +50,7 @@ def mobile_management(request):
     else:
         options = XCUITestOptions().load_capabilities(capabilities)
 
-    browser.config.driver_remote_url = str(os.getenv('remote_url', 'http://hub.browserstack.com/wd/hub'))
-    browser.config.driver_options = options
+    browser.config.driver = app_webdriver.Remote(command_executor='http://hub.browserstack.com/wd/hub', options=options)
     browser.config.timeout = float(os.getenv('timeout', '10.0'))
 
     yield
@@ -92,7 +92,7 @@ def browser_management():
     user_login = os.getenv('SELENOID_LOGIN')
     user_password = os.getenv('SELENOID_PASSWORD')
     selenoid_url = os.getenv('SELENOID_URL')
-    driver = webdriver.Remote(
+    driver = selenium.webdriver.Remote(
         command_executor=f'https://{user_login}:{user_password}@{selenoid_url}/wd/hub',
         options=driver_options)
 
