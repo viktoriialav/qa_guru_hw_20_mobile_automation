@@ -7,7 +7,7 @@ from appium import webdriver
 from dotenv import load_dotenv
 from selene import browser
 
-from hw_19_mobile_automation.utils import allure_web, allure_browserstack
+from hw_19_mobile_automation.utils import allure_browserstack
 
 
 @pytest.fixture(scope='session', autouse=True)
