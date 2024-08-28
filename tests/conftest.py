@@ -1,18 +1,9 @@
-import os
-
 import pytest
-from appium.options.android import UiAutomator2Options
-from appium.options.ios import XCUITestOptions
 from appium import webdriver
-from dotenv import load_dotenv
 from selene import browser
 
+import config
 from hw_19_mobile_automation.utils import allure_browserstack
-
-
-@pytest.fixture(scope='session', autouse=True)
-def load_env():
-    load_dotenv()
 
 
 @pytest.fixture(scope='function', params=[('android', '12.0', 'Samsung Galaxy S22 Ultra'),
@@ -23,33 +14,16 @@ def load_env():
                                           ('ios', '14', 'iPhone 11')])
 def mobile_management(request):
     platform_name, platform_version, device_name = request.param
-    user_name = os.getenv('USER_NAME')
-    access_key = os.getenv('ACCESS_KEY')
-    capabilities = {
-        "platformName": platform_name,
-        "platformVersion": platform_version,
-        "deviceName": device_name,
+    initial_options = config.settings
+    initial_options.platformName = platform_name
+    initial_options.platformVersion = platform_version
+    initial_options.deviceName = device_name
+    options = initial_options.driver_options
 
-        "app": 'bs://sample.app',
+    browser.config.driver = webdriver.Remote(command_executor=config.settings.remote_url,
+                                             options=options)
 
-        'bstack:options': {
-            "projectName": "First Python project",
-            "buildName": "browserstack-build-1",
-            "sessionName": "BStack first_test",
-
-            "userName": user_name,
-            "accessKey": access_key
-        }
-    }
-
-    if platform_name == 'android':
-        capabilities['app'] = os.getenv('APP_URL')
-        options = UiAutomator2Options().load_capabilities(capabilities)
-    else:
-        options = XCUITestOptions().load_capabilities(capabilities)
-
-    browser.config.driver = webdriver.Remote(command_executor='http://hub.browserstack.com/wd/hub', options=options)
-    browser.config.timeout = float(os.getenv('timeout', '10.0'))
+    browser.config.timeout = config.settings.timeout
 
     yield
 
@@ -59,4 +33,4 @@ def mobile_management(request):
 
     browser.quit()
 
-    allure_browserstack.attach_video(session_id, user_name, access_key)
+    allure_browserstack.attach_video(session_id, config.settings.user_name, config.settings.access_key)

@@ -13,6 +13,7 @@ appium-python-client = "^4.1.0"
 allure-pytest = "^2.13.5"
 python-dotenv = "^1.0.1"
 requests = "^2.32.3"
+pydantic-settings = "^2.4.0"
 
 
 [build-system]

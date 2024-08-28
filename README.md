@@ -1,4 +1,4 @@
-### qa_guru_hw_19_mobile_automation
+### qa_guru_hw_19_mobile_automation_and pydantic
 
 Задание:
 1) Зарегистрировать аккаунт в https://browserstack.com
