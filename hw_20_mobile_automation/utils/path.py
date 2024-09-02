@@ -1,5 +1,6 @@
-import hw_20_mobile_automation
 from pathlib import Path
+
+import hw_20_mobile_automation
 
 
 def abs_path_from_root(path: str):

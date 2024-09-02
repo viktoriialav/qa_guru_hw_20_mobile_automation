@@ -13,7 +13,7 @@ def mobile_management():
 
     browser.config.timeout = config.settings.timeout
 
-    yield config.settings.platformName
+    yield
 
     session_id = browser.driver.session_id
     allure_browserstack.attach_screenshot(browser)

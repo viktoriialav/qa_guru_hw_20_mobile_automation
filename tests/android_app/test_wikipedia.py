@@ -8,7 +8,8 @@ if settings.platformName == 'ios':
 
 
 def test_get_started_page(mobile_management):
-    app.wikipedia_get_started_page.should_have_special_text(page=1, text='The Free Encyclopedia\n…in over 300 languages')
+    app.wikipedia_get_started_page.should_have_special_text(page=1,
+                                                            text='The Free Encyclopedia\n…in over 300 languages')
     app.wikipedia_get_started_page.click_on_continue()
 
     app.wikipedia_get_started_page.should_have_special_text(page=2, text='New ways to explore')

@@ -30,5 +30,5 @@ class GeneralPage():
 
     def should_have_special_result_on_first_page(self, value):
         with step('Verify found result'):
-            # browser.element((AppiumBy.CLASS_NAME, 'wikipedia.webkit.WebView')).all((AppiumBy.CLASS_NAME, 'wikipedia.widget.TextView')).first.should(have.text('Trouble'))
-            browser.element((AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Trouble").instance(0)')).should(have.text(value))
+            browser.element((AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Trouble").instance(0)')).should(
+                have.text(value))

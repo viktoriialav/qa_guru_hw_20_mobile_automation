@@ -4,7 +4,6 @@ from typing import Optional, Literal
 import dotenv
 from appium.options.android import UiAutomator2Options
 from appium.options.ios import XCUITestOptions
-from pydantic import Field
 from pydantic_settings import BaseSettings
 
 from hw_20_mobile_automation.utils import path
@@ -17,6 +16,7 @@ class Settings(BaseSettings):
 
     # Appium Capabilities
     platformName: Optional[str] = 'wikipedia'
+    udid: Optional[str] = 'emulator-5554'
     platformVersion: Optional[str] = None
     deviceName: Optional[str] = 'Pixel 8 API 33'
     app: Optional[str] = None
@@ -45,6 +45,7 @@ class Settings(BaseSettings):
             options = XCUITestOptions()
 
         options.device_name = self.deviceName
+        options.udid = self.udid
         options.platform_name = self.platformName
         options.platform_version = self.platformVersion
         options.app = self.app if (self.app.startswith('/') or self.app.startswith('bs://') or self.app.startswith(

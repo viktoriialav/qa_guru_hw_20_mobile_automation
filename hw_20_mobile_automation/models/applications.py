@@ -1,4 +1,3 @@
-# from hw_20_mobile_automation.models.pages.wikipedia.get_started_page import GetStartedPage
 from hw_20_mobile_automation.models.pages import wikipedia, ios_app
 
 

@@ -1,6 +1,6 @@
 from allure import step
 from appium.webdriver.common.appiumby import AppiumBy
-from selene import browser, have, be
+from selene import browser, have
 
 
 class GetStartedPage:
