@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     context: EnvContext = 'local_emulator'
 
     # Appium Capabilities
-    platformName: Optional[str] = 'android'
+    platformName: Optional[str] = 'wikipedia'
     platformVersion: Optional[str] = None
     deviceName: Optional[str] = 'Pixel 8 API 33'
     app: Optional[str] = None

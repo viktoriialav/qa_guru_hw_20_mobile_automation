@@ -1,29 +1,22 @@
 import pytest
-from allure import step
-from appium.webdriver.common.appiumby import AppiumBy
-from selene import browser, have
 
 from config import settings
-
+from hw_20_mobile_automation.models.applications import app
 
 if settings.platformName == 'android':
-    pytest.skip("Skipping tests for ios platform", allow_module_level=True)
+    pytest.skip("Skipping tests for android platform", allow_module_level=True)
 
 
 def test_ui_elements_for_one_input():
-    with step('Type search'):
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Button')).click()
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Input')).type('hello@browserstack.com').press_enter()
+    app.ios_app_general_page.click_on_text_button()
+    app.ios_app_general_page.enter_text('hello@browserstack.com')
 
-    with step('Verify found content'):
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Output')).should(have.text('hello@browserstack.com'))
+    app.ios_app_general_page.should_have_special_text('hello@browserstack.com')
 
 
 def test_ui_elements_for_two_inputs():
-    with step('Type search'):
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Button')).click()
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Input')).type('hello@browserstack.com').press_enter()
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Input')).type('goodbuy@browserstack.com').press_enter()
+    app.ios_app_general_page.click_on_text_button()
+    app.ios_app_general_page.enter_text('hello@browserstack.com')
+    app.ios_app_general_page.enter_text('goodbuy@browserstack.com')
 
-    with step('Verify found content'):
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Output')).should(have.text('goodbuy@browserstack.com'))
+    app.ios_app_general_page.should_have_special_text('goodbuy@browserstack.com')

@@ -18,17 +18,17 @@ class GeneralPage():
         with step('Type serach'):
             browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/search_src_text')).type(text)
 
-    def should_have_special_search_result(self):
+    def should_have_special_search_result(self, value):
         with step('Verify found content'):
             results = browser.all((AppiumBy.ID, 'org.wikipedia.alpha:id/page_list_item_title'))
             results.should(have.size_greater_than(0))
-            results.first.should(have.text('Appium'))
+            results.first.should(have.text(value))
 
     def open_first_search_result(self):
         with step('Open the first search result'):
             browser.all((AppiumBy.ID, 'org.wikipedia.alpha:id/page_list_item_title')).first.click()
 
-    def should_have_special_result_on_first_page(self):
+    def should_have_special_result_on_first_page(self, value):
         with step('Verify found result'):
-            browser.element((AppiumBy.CLASS_NAME, 'android.webkit.WebView')).all(
-                (AppiumBy.CLASS_NAME, 'android.widget.TextView')).first.should(have.text('Trouble'))
+            # browser.element((AppiumBy.CLASS_NAME, 'wikipedia.webkit.WebView')).all((AppiumBy.CLASS_NAME, 'wikipedia.widget.TextView')).first.should(have.text('Trouble'))
+            browser.element((AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Trouble").instance(0)')).should(have.text(value))
