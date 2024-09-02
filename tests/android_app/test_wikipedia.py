@@ -7,7 +7,7 @@ if settings.platformName == 'ios':
     pytest.skip("Skipping tests for ios platform", allow_module_level=True)
 
 
-def test_get_started_page(mobile_management):
+def test_get_started_page():
     app.wikipedia_get_started_page.should_have_special_text(page=1,
                                                             text='The Free Encyclopedia\n…in over 300 languages')
     app.wikipedia_get_started_page.click_on_continue()
@@ -23,7 +23,7 @@ def test_get_started_page(mobile_management):
     app.wikipedia_general_page.should_have_main_search()
 
 
-def test_search(mobile_management):
+def test_search():
     app.wikipedia_get_started_page.skip_get_started_page()
 
     app.wikipedia_general_page.click_to_main_search()
@@ -32,7 +32,7 @@ def test_search(mobile_management):
     app.wikipedia_general_page.should_have_special_search_result('Appium')
 
 
-def test_open_first_search_result_and_verify(mobile_management):
+def test_open_first_search_result_and_verify():
     app.wikipedia_get_started_page.skip_get_started_page()
 
     app.wikipedia_general_page.click_to_main_search()
