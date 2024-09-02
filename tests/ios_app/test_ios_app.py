@@ -3,16 +3,14 @@ from allure import step
 from appium.webdriver.common.appiumby import AppiumBy
 from selene import browser, have
 
-iphone_14_pro_max = pytest.mark.parametrize('mobile_management',
-                                            [('ios', '16', 'iPhone 14 Pro Max')],
-                                            indirect=True)
-iphone_xs = pytest.mark.parametrize('mobile_management',
-                                    [('ios', '15', 'iPhone XS')],
-                                    indirect=True)
+from config import settings
 
 
-@iphone_14_pro_max
-def test_ui_elements_for_one_input(mobile_management):
+if settings.platformName == 'android':
+    pytest.skip("Skipping tests for ios platform", allow_module_level=True)
+
+
+def test_ui_elements_for_one_input():
     with step('Type search'):
         browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Button')).click()
         browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Input')).type('hello@browserstack.com').press_enter()
@@ -21,8 +19,7 @@ def test_ui_elements_for_one_input(mobile_management):
         browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Output')).should(have.text('hello@browserstack.com'))
 
 
-@iphone_xs
-def test_ui_elements_for_two_inputs(mobile_management):
+def test_ui_elements_for_two_inputs():
     with step('Type search'):
         browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Button')).click()
         browser.element((AppiumBy.ACCESSIBILITY_ID, 'Text Input')).type('hello@browserstack.com').press_enter()

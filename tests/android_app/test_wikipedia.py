@@ -1,37 +1,41 @@
 import pytest
-from allure import step
-from appium.webdriver.common.appiumby import AppiumBy
-from selene import browser, have
 
-samsung_s22_ultra = pytest.mark.parametrize('mobile_management',
-                                            [('android', '12.0', 'Samsung Galaxy S22 Ultra')],
-                                            indirect=True)
-google_pixel_7_pro = pytest.mark.parametrize('mobile_management',
-                                             [('android', '13.0', 'Google Pixel 7 Pro')],
-                                             indirect=True)
+from config import settings
+from hw_20_mobile_automation.models.applications import app
+
+if settings.platformName == 'ios':
+    pytest.skip("Skipping tests for ios platform", allow_module_level=True)
 
 
-@samsung_s22_ultra
+def test_get_started_page(mobile_management):
+    app.get_started_page.should_have_special_text(page=1, text='The Free Encyclopedia\n…in over 300 languages')
+    app.get_started_page.click_on_continue()
+
+    app.get_started_page.should_have_special_text(page=2, text='New ways to explore')
+    app.get_started_page.click_on_continue()
+
+    app.get_started_page.should_have_special_text(page=3, text='Reading lists with sync')
+    app.get_started_page.click_on_continue()
+
+    app.get_started_page.should_have_special_text(page=4, text='Data & Privacy')
+    app.get_started_page.click_on_get_started()
+    app.general_page.should_have_main_search()
+
+
 def test_search(mobile_management):
-    with step('Type search'):
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_skip_button')).click()
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Search Wikipedia')).click()
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/search_src_text')).type('Appium')
+    app.get_started_page.skip_get_started_page()
 
-    with step('Verify found content'):
-        results = browser.all((AppiumBy.ID, 'org.wikipedia.alpha:id/page_list_item_title'))
-        results.should(have.size_greater_than(0))
-        results.first.should(have.text('Appium'))
+    app.general_page.click_to_main_search()
+    app.general_page.enter_text_in_search_line('Appium')
+
+    app.general_page.should_have_special_search_result()
 
 
-@google_pixel_7_pro
-def test_open_search_result_and_verify(mobile_management):
-    with step('Type search'):
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_skip_button')).click()
-        browser.element((AppiumBy.ACCESSIBILITY_ID, 'Search Wikipedia')).click()
-        browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/search_src_text')).type('Trouble')
+def test_open_first_search_result_and_verify(mobile_management):
+    app.get_started_page.skip_get_started_page()
 
-    with step('Verify found content'):
-        browser.all((AppiumBy.ID, 'org.wikipedia.alpha:id/page_list_item_title')).first.click()
-        browser.element((AppiumBy.CLASS_NAME, 'android.webkit.WebView')).all(
-            (AppiumBy.CLASS_NAME, 'android.widget.TextView')).first.should(have.text('Trouble'))
+    app.general_page.click_to_main_search()
+    app.general_page.enter_text_in_search_line('Trouble')
+
+    app.general_page.open_first_search_result()
+    app.general_page.should_have_special_result_on_first_page()
