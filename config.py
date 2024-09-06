@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     projectName: Optional[str] = None
     buildName: Optional[str] = None
     session_name: Optional[str] = None
+    interactiveDebugging: Optional[bool] = False
 
     # BrowserStack credential
     user_name: Optional[str] = None
@@ -61,12 +62,14 @@ class Settings(BaseSettings):
             options.load_capabilities(
                 {
                     'bstack:options': {
-                        "projectName": self.projectName,
-                        "buildName": self.buildName,
-                        "sessionName": self.session_name,
+                        'projectName': self.projectName,
+                        'buildName': self.buildName,
+                        'sessionName': self.session_name,
 
-                        "userName": self.user_name,
-                        "accessKey": self.access_key
+                        'userName': self.user_name,
+                        'accessKey': self.access_key,
+
+                        'interactiveDebugging': self.interactiveDebugging,
                     }
                 }
             )
@@ -78,4 +81,4 @@ class Settings(BaseSettings):
         return cls(_env_file=path.abs_path_from_root(f'.env.{env}'))
 
 
-settings = Settings.in_context()
+settings = Settings.in_context('bstack_android')
