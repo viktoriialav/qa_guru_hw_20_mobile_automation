@@ -17,6 +17,6 @@ class GetStartedPage:
             browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/fragment_onboarding_skip_button')).click()
 
     def should_have_special_text(self, text, page=None):
-        with step(f'Check the text {'on the' * bool(page) + str(page) + 'page' * bool(page)}'):
+        with step(f'Check the text {'on the ' * bool(page) + str(page) + ' page' * bool(page)}'):
             browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/primaryTextView')).should(
                 have.exact_text(text))

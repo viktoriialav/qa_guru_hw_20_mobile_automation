@@ -1,6 +1,7 @@
+import allure_commons
 import pytest
 from appium import webdriver
-from selene import browser
+from selene import browser, support
 
 import config
 from hw_20_mobile_automation.utils import allure_browserstack
@@ -13,6 +14,9 @@ def mobile_management():
 
     browser.config.timeout = config.settings.timeout
 
+    browser.config._wait_decorator = support._logging.wait_with(
+        context=allure_commons._allure.StepContext
+    )
     yield
 
     session_id = browser.driver.session_id
@@ -21,5 +25,5 @@ def mobile_management():
 
     browser.quit()
 
-    if config.settings.access_key:
+    if config.settings.is_bstack:
         allure_browserstack.attach_video(session_id, config.settings.user_name, config.settings.access_key)

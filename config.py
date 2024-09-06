@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     appWaitActivity: Optional[str] = 'org.wikipedia.*'
 
     # BrowserStack Capabilities
+    is_bstack: Optional[bool] = False
     projectName: Optional[str] = None
     buildName: Optional[str] = None
     session_name: Optional[str] = None
@@ -52,8 +53,11 @@ class Settings(BaseSettings):
             'C:\\')) else path.abs_path_from_root(self.app)
         options.app_wait_activity = self.appWaitActivity
 
-        if 'hub.browserstack.com' in self.remote_url:
+        self.is_bstack = 'hub.browserstack.com' in self.remote_url
+        if self.is_bstack:
             dotenv.load_dotenv(path.abs_path_from_root('.env.bstack_credential'))
+            self.user_name = os.getenv('bstack_userName')
+            self.access_key = os.getenv('bstack_accessKey')
             options.load_capabilities(
                 {
                     'bstack:options': {
@@ -61,8 +65,8 @@ class Settings(BaseSettings):
                         "buildName": self.buildName,
                         "sessionName": self.session_name,
 
-                        "userName": os.getenv('bstack_userName'),
-                        "accessKey": os.getenv('bstack_accessKey')
+                        "userName": self.user_name,
+                        "accessKey": self.access_key
                     }
                 }
             )
