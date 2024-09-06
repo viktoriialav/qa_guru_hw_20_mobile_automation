@@ -81,4 +81,4 @@ class Settings(BaseSettings):
         return cls(_env_file=path.abs_path_from_root(f'.env.{env}'))
 
 
-settings = Settings.in_context('bstack_android')
+settings = Settings.in_context()
